@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>School Quiz</title>
+
+        <!-- Tailwind (CDN) -->
+        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+        <!-- Alpine.js (CDN) -->
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+        <style>
+            /* Custom Award Icon styling */
+            .award-icon {
+                width: 80px;
+                height: 80px;
+            }
+        </style>
+    </head>
+    <body class="bg-gray-50 text-gray-800" x-data="quizApp()" x-init="init()">
+        <!-- Screen 1: Create/Select Player -->
+        <div
+            x-show="screen === 1"
+            x-transition:enter="transition ease-out duration-500"
+            x-transition:enter-start="opacity-0 transform scale-90"
+            x-transition:enter-end="opacity-100 transform scale-100"
+            class="max-w-md mx-auto mt-10 p-4 bg-white rounded shadow"
+        >
+            <h1 class="text-2xl font-bold mb-4">Create or Select Player</h1>
+
+            <!-- Create new player -->
+            <div class="mb-4">
+                <label class="block font-medium mb-2" for="newPlayerName">New Player Name</label>
+                <input
+                    type="text"
+                    id="newPlayerName"
+                    class="border rounded w-full p-2"
+                    x-model="newPlayerName"
+                    placeholder="Enter player name..."
+                />
+                <button
+                    class="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition transform hover:scale-105"
+                    @click="createPlayer"
+                >
+                    Create &amp; Select
+                </button>
+            </div>
+
+            <!-- OR select existing player -->
+            <div x-show="players.length > 0" class="mt-6">
+                <h2 class="font-semibold mb-2">Select Existing Player</h2>
+                <template x-for="(player, index) in players" :key="index">
+                    <div class="flex items-center mb-2">
+                        <span class="flex-1">
+                            <span x-text="player.name"></span>
+                            <small class="text-gray-500 ml-2" x-text="getPlayerProgressString(player)"></small>
+                        </span>
+                        <button
+                            class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition transform hover:scale-105"
+                            @click="selectPlayer(player)"
+                        >
+                            Select
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Screen 2: Select Subject -->
+        <div
+            x-show="screen === 2"
+            x-transition:enter="transition ease-out duration-500"
+            x-transition:enter-start="opacity-0 transform scale-90"
+            x-transition:enter-end="opacity-100 transform scale-100"
+            class="max-w-md mx-auto mt-10 p-4 bg-white rounded shadow"
+        >
+            <h2 class="text-xl font-bold mb-4">Select a Subject</h2>
+            <template x-for="(subj, idx) in subjects" :key="idx">
+                <button
+                    class="flex items-center w-full text-left px-4 py-2 bg-blue-100 rounded hover:bg-blue-200 mb-2 transition transform hover:scale-105"
+                    @click="selectSubject(subj)"
+                >
+                    <img :src="subj.IconFile" alt="Subject Icon" class="w-10 h-10 mr-3" />
+                    <div class="flex-1">
+                        <div class="font-semibold" x-text="subj.Subject"></div>
+                        <div class="text-sm text-gray-600" x-text="subj.Description"></div>
+                        <div class="text-sm text-gray-700 mt-1" x-show="currentPlayer">
+                            Your Score: <span x-text="getUserScoreForSubject(subj.Subject)"></span>
+                        </div>
+                        <div class="text-sm text-gray-700 mt-1" x-show="currentPlayer">
+                            Reached Level: <span x-text="getUserReachedLevelForSubject(subj.Subject)"></span>
+                        </div>
+                    </div>
+                </button>
+            </template>
+
+            <button
+                class="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition transform hover:scale-105 mt-4"
+                @click="shareScreenshot()"
+            >
+                Share Screenshot
+            </button>
+        </div>
+
+        <!-- Screen 3: Answer Questions -->
+        <div
+            x-show="screen === 3"
+            x-transition:enter="transition ease-out duration-500"
+            x-transition:enter-start="opacity-0 transform scale-90"
+            x-transition:enter-end="opacity-100 transform scale-100"
+            class="max-w-md mx-auto mt-10 p-4 bg-white rounded shadow"
+        >
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-xl font-bold" x-text="currentLevelLabel"></h2>
+                <span class="text-sm text-gray-500">
+                    Score: <span x-text="score"></span> / <span x-text="currentLevel.RequiredScore"></span>
+                </span>
+            </div>
+            <hr class="mb-4" />
+            <!-- Current Question -->
+            <div class="mb-4">
+                <p class="text-lg font-medium mb-2" x-text="currentQuestionText"></p>
+                <div class="space-y-2">
+                    <template x-for="(ans, idx) in currentAnswers" :key="idx">
+                        <button
+                            class="block w-full text-left px-4 py-2 rounded transition transform hover:scale-105"
+                            :class="getAnswerClass(ans)"
+                            @click="answerQuestion(ans)"
+                            :disabled="isAnswering"
+                        >
+                            <span x-text="ans.Answer"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 4: Level Complete / Congrats -->
+        <div
+            x-show="screen === 4"
+            x-transition:enter="transition ease-out duration-500"
+            x-transition:enter-start="opacity-0 transform scale-90"
+            x-transition:enter-end="opacity-100 transform scale-100"
+            class="max-w-md mx-auto mt-10 p-4 bg-white rounded shadow text-center"
+        >
+            <!-- Award Icon -->
+            <div class="flex justify-center mb-4">
+                <img :src="currentSubjectObj.IconFile" alt="Award Icon" class="award-icon animate-bounce" />
+            </div>
+            <h2 class="text-2xl font-bold mb-4">Level Complete!</h2>
+            <p class="text-lg mb-4">You scored <span x-text="score"></span> points!</p>
+
+            <!-- Add player's name and current level info -->
+            <p class="text-lg mb-2">Congratulations, <span x-text="currentPlayer.name"></span>!</p>
+            <p class="text-md mb-4">You have completed the level: <span x-text="currentLevelLabel"></span></p>
+
+            <div x-show="score >= currentLevel.RequiredScore" class="mb-4">
+                <button
+                    class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition transform hover:scale-105 mr-2"
+                    @click="goToNextLevel"
+                >
+                    Next Level
+                </button>
+            </div>
+            <div x-show="score < currentLevel.RequiredScore" class="mb-4 text-red-600">
+                <p>You haven't reached the required score. Try again!</p>
+                <button
+                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition transform hover:scale-105 mt-2"
+                    @click="retryLevel"
+                >
+                    Retry
+                </button>
+            </div>
+            <div x-show="quizFinished" class="text-xl font-semibold text-green-700">
+                Congratulations! You've completed all levels in this subject!
+            </div>
+            <button
+                class="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 transition transform hover:scale-105 mt-4"
+                @click="backToHome"
+            >
+                Back to Home
+            </button>
+
+            <button
+                class="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition transform hover:scale-105 mt-4"
+                @click="shareScreenshot()"
+            >
+                Share Screenshot
+            </button>
+        </div>
+
+        <!-- Alpine.js logic -->
+        <script>
+            function quizApp() {
+                return {
+                    // Screens:
+                    // 1 = Create/Select Player, 2 = Select Subject, 3 = Answer Questions, 4 = Level Complete
+                    screen: 1,
+
+                    // Player management
+                    players: [],
+                    newPlayerName: "",
+                    currentPlayer: null,
+
+                    // Subject management
+                    subjects: [],
+                    currentSubjectObj: null, // full subject object (with IconFile, etc.)
+
+                    // Levels and questions
+                    levels: [],
+                    currentLevelIndex: 0,
+                    score: 0,
+                    quizFinished: false,
+
+                    // Current question
+                    unansweredQuestions: [],
+                    currentQuestionIndex: 0,
+                    currentAnswers: [],
+                    isAnswering: false, // disables answer buttons during feedback
+
+                    async init() {
+                        this.loadPlayersFromStorage();
+                        await this.loadSubjectsFromJson("quiz/subjects.json");
+                    },
+
+                    // Load subjects from JSON
+                    async loadSubjectsFromJson(url) {
+                        try {
+                            const response = await fetch(url);
+                            const data = await response.json();
+                            this.subjects = data;
+                        } catch (error) {
+                            console.error("Error loading subjects JSON:", error);
+                        }
+                    },
+
+                    // Load levels from a subject's JSON file
+                    async loadLevelsFromJson(filePath) {
+                        try {
+                            const response = await fetch(filePath);
+                            const data = await response.json();
+                            this.levels = data;
+                        } catch (error) {
+                            console.error("Error loading level JSON:", error);
+                        }
+                    },
+
+                    loadPlayersFromStorage() {
+                        const storedData = localStorage.getItem("quizAppData");
+                        if (storedData) {
+                            const parsed = JSON.parse(storedData);
+                            this.players = parsed.players || [];
+                        }
+                    },
+
+                    savePlayersToStorage() {
+                        const data = { players: this.players };
+                        localStorage.setItem("quizAppData", JSON.stringify(data));
+                    },
+
+                    createPlayer() {
+                        if (!this.newPlayerName.trim()) return;
+                        const newPlayer = {
+                            name: this.newPlayerName.trim(),
+                            subjects: {},
+                        };
+                        this.players.push(newPlayer);
+                        this.savePlayersToStorage();
+                        this.selectPlayer(newPlayer);
+                        this.newPlayerName = "";
+                    },
+
+                    selectPlayer(player) {
+                        this.currentPlayer = player;
+                        this.screen = 2;
+                    },
+
+                    async selectSubject(subj) {
+                        // Store full subject object (includes IconFile, QuestionsFile, etc.)
+                        this.currentSubjectObj = subj;
+                        await this.loadLevelsFromJson(`quiz/${subj.QuestionsFile}`);
+                        this.currentLevelIndex = 0;
+                        this.quizFinished = false;
+                        const subProgress = this.getSubjectProgress(this.currentPlayer, subj.Subject);
+                        if (subProgress.length > 0) {
+                            for (let i = 0; i < this.levels.length; i++) {
+                                const lv = this.levels[i];
+                                const existing = subProgress.find((sp) => sp.level === lv.Level);
+                                if (!existing || existing.score < lv.RequiredScore) {
+                                    this.currentLevelIndex = i;
+                                    break;
+                                }
+                                if (i === this.levels.length - 1 && existing.score >= lv.RequiredScore) {
+                                    this.currentLevelIndex = i;
+                                    this.quizFinished = true;
+                                }
+                            }
+                        }
+                        if (this.quizFinished) {
+                            this.screen = 4;
+                            return;
+                        }
+                        this.startLevel();
+                    },
+
+                    startLevel() {
+                        this.screen = 3;
+                        this.score = 0;
+                        this.isAnswering = false;
+                        const level = this.currentLevel;
+                        let questions = level.Questions || [];
+                        if (level.Randomize) {
+                            questions = this.shuffleArray([...questions]);
+                        }
+                        const answeredBefore = this.getAnsweredQuestionsForLevel(
+                            this.currentPlayer,
+                            this.currentSubjectObj.Subject,
+                            level.Level
+                        );
+                        this.unansweredQuestions = questions.filter((q) => !answeredBefore.includes(q.Question));
+                        this.currentQuestionIndex = 0;
+                        this.loadCurrentQuestion();
+                    },
+
+                    loadCurrentQuestion() {
+                        if (this.score >= this.currentLevel.RequiredScore) {
+                            this.finishLevel();
+                            return;
+                        }
+                        if (this.unansweredQuestions.length === 0) {
+                            this.finishLevel();
+                            return;
+                        }
+                        if (this.currentQuestionIndex >= this.unansweredQuestions.length) {
+                            this.currentQuestionIndex = 0;
+                        }
+                        this.isAnswering = false;
+                        const questionObj = this.unansweredQuestions[this.currentQuestionIndex];
+                        if (!questionObj) return;
+                        this.currentAnswers = this.shuffleArray([...questionObj.Answers]);
+                    },
+
+                    get currentLevel() {
+                        return this.levels[this.currentLevelIndex] || null;
+                    },
+
+                    get currentLevelLabel() {
+                        return this.currentLevel ? this.currentLevel.Level : "";
+                    },
+
+                    get currentQuestionText() {
+                        const questionObj = this.unansweredQuestions[this.currentQuestionIndex];
+                        return questionObj ? questionObj.Question : "";
+                    },
+
+                    answerQuestion(ans) {
+                        if (this.isAnswering) return;
+                        this.isAnswering = true;
+                        const isCorrect = ans.Correct === true;
+                        if (isCorrect) {
+                            this.score++;
+                            const questionText = this.unansweredQuestions[this.currentQuestionIndex].Question;
+                            this.saveAnsweredQuestionForPlayer(
+                                this.currentPlayer,
+                                this.currentSubjectObj.Subject,
+                                this.currentLevel.Level,
+                                questionText
+                            );
+                            this.unansweredQuestions.splice(this.currentQuestionIndex, 1);
+                        } else {
+                            this.currentQuestionIndex++;
+                        }
+                        setTimeout(() => {
+                            this.loadCurrentQuestion();
+                        }, 2000);
+                    },
+
+                    finishLevel() {
+                        this.screen = 4;
+                        this.saveLevelScore(
+                            this.currentPlayer,
+                            this.currentSubjectObj.Subject,
+                            this.currentLevel.Level,
+                            this.score
+                        );
+                        if (
+                            this.currentLevelIndex >= this.levels.length - 1 &&
+                            this.score >= this.currentLevel.RequiredScore
+                        ) {
+                            this.quizFinished = true;
+                        }
+                    },
+
+                    goToNextLevel() {
+                        this.currentLevelIndex++;
+                        if (this.currentLevelIndex >= this.levels.length) {
+                            this.quizFinished = true;
+                        } else {
+                            this.startLevel();
+                        }
+                    },
+
+                    retryLevel() {
+                        this.startLevel();
+                    },
+
+                    backToHome() {
+                        this.quizFinished = false;
+                        this.screen = 1;
+                    },
+
+                    shuffleArray(array) {
+                        for (let i = array.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [array[i], array[j]] = [array[j], array[i]];
+                        }
+                        return array;
+                    },
+
+                    saveLevelScore(player, subjectName, levelLabel, newScore) {
+                        if (!player.subjects[subjectName]) {
+                            player.subjects[subjectName] = [];
+                        }
+                        const subProgress = player.subjects[subjectName];
+                        const existingLevel = subProgress.find((l) => l.level === levelLabel);
+                        if (existingLevel) {
+                            existingLevel.score = Math.max(existingLevel.score, newScore);
+                        } else {
+                            subProgress.push({
+                                level: levelLabel,
+                                score: newScore,
+                                answeredQuestions: [],
+                            });
+                        }
+                        this.savePlayersToStorage();
+                    },
+
+                    getAnsweredQuestionsForLevel(player, subjectName, levelLabel) {
+                        if (!player.subjects[subjectName]) return [];
+                        const subProgress = player.subjects[subjectName];
+                        const existingLevel = subProgress.find((l) => l.level === levelLabel);
+                        if (existingLevel && existingLevel.answeredQuestions) {
+                            return existingLevel.answeredQuestions;
+                        }
+                        return [];
+                    },
+
+                    saveAnsweredQuestionForPlayer(player, subjectName, levelLabel, questionText) {
+                        if (!player.subjects[subjectName]) {
+                            player.subjects[subjectName] = [];
+                        }
+                        const subProgress = player.subjects[subjectName];
+                        let existingLevel = subProgress.find((l) => l.level === levelLabel);
+                        if (!existingLevel) {
+                            existingLevel = { level: levelLabel, score: 0, answeredQuestions: [] };
+                            subProgress.push(existingLevel);
+                        }
+                        if (!existingLevel.answeredQuestions.includes(questionText)) {
+                            existingLevel.answeredQuestions.push(questionText);
+                        }
+                        this.savePlayersToStorage();
+                    },
+
+                    getSubjectProgress(player, subjectName) {
+                        if (!player.subjects[subjectName]) {
+                            player.subjects[subjectName] = [];
+                        }
+                        return player.subjects[subjectName];
+                    },
+
+                    getPlayerProgressString(player) {
+                        const subjNames = Object.keys(player.subjects);
+                        if (subjNames.length === 0) return "(no progress yet)";
+                        return subjNames
+                            .map((subject) => {
+                                const progress = player.subjects[subject];
+                                return `${subject}: ${progress.length} level(s) attempted`;
+                            })
+                            .join(", ");
+                    },
+
+                    // Returns the highest level reached by the user for a given subject
+                    getUserReachedLevelForSubject(subjectName) {
+                        if (!this.currentPlayer || !this.currentPlayer.subjects[subjectName]) return "None";
+                        const levels = this.currentPlayer.subjects[subjectName];
+                        return levels.length ? levels[levels.length - 1].level : "None";
+                    },
+
+                    // Stub function to share a screenshot (implement with your preferred library)
+                    shareScreenshot() {
+                        // Example using alert; replace with html2canvas or similar as needed.
+                        alert("Share screenshot functionality coming soon!");
+                    },
+
+                    // Returns the total score for a subject for the current user
+                    getUserScoreForSubject(subjectName) {
+                        if (!this.currentPlayer || !this.currentPlayer.subjects[subjectName]) return 0;
+                        return this.currentPlayer.subjects[subjectName].reduce((sum, lvl) => sum + lvl.score, 0);
+                    },
+
+                    getAnswerClass(ans) {
+                        if (!this.isAnswering) return "bg-blue-100 hover:bg-blue-200";
+                        return ans.Correct ? "bg-green-300" : "bg-red-300";
+                    },
+                };
+            }
+        </script>
+    </body>
+</html>

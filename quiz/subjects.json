@@ -1,0 +1,14 @@
+[
+    {
+        "Subject": "Math",
+        "Description": "Math questions for primary school",
+        "QuestionsFile": "math.json",
+        "IconFile": "icons/math.svg"
+    },
+    {
+        "Subject": "Science",
+        "Description": "Science questions for primary school",
+        "QuestionsFile": "science.json",
+        "IconFile": "icons/science.svg"
+    }
+]

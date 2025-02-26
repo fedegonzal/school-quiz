@@ -1,0 +1,335 @@
+[
+    {
+        "Level": 1,
+        "RequiredScore": 3,
+        "Questions": [
+            {
+                "Question": "What is the chemical symbol for water?",
+                "Answers": [
+                    {
+                        "Answer": "O2",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "H2O",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "CO2",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "NaCl",
+                        "Correct": false
+                    }
+                ]
+            },
+            {
+                "Question": "What planet is known as the Red Planet?",
+                "Answers": [
+                    {
+                        "Answer": "Earth",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Venus",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Mars",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "Jupiter",
+                        "Correct": false
+                    }
+                ]
+            },
+            {
+                "Question": "Which gas do plants absorb from the atmosphere?",
+                "Answers": [
+                    {
+                        "Answer": "Oxygen",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Carbon Dioxide",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "Nitrogen",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Hydrogen",
+                        "Correct": false
+                    }
+                ]
+            },
+            {
+                "Question": "What force pulls objects toward Earth?",
+                "Answers": [
+                    {
+                        "Answer": "Magnetism",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Friction",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Gravity",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "Tension",
+                        "Correct": false
+                    }
+                ]
+            },
+            {
+                "Question": "What part of the plant conducts photosynthesis?",
+                "Answers": [
+                    {
+                        "Answer": "Roots",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Stem",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Leaves",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "Flowers",
+                        "Correct": false
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "Level": 2,
+        "RequiredScore": 4,
+        "Questions": [
+            {
+                "Question": "What is the center of an atom called?",
+                "Answers": [
+                    {
+                        "Answer": "Nucleus",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "Proton",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Electron",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Neutron",
+                        "Correct": false
+                    }
+                ]
+            },
+            {
+                "Question": "What is the hardest natural substance on Earth?",
+                "Answers": [
+                    {
+                        "Answer": "Gold",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Diamond",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "Iron",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Platinum",
+                        "Correct": false
+                    }
+                ]
+            },
+            {
+                "Question": "Which part of the human body produces insulin?",
+                "Answers": [
+                    {
+                        "Answer": "Liver",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Pancreas",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "Kidney",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Stomach",
+                        "Correct": false
+                    }
+                ]
+            },
+            {
+                "Question": "What is the process by which water changes from liquid to gas?",
+                "Answers": [
+                    {
+                        "Answer": "Evaporation",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "Condensation",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Precipitation",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Sublimation",
+                        "Correct": false
+                    }
+                ]
+            },
+            {
+                "Question": "What is the closest star to Earth?",
+                "Answers": [
+                    {
+                        "Answer": "The Moon",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Mars",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Venus",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "The Sun",
+                        "Correct": true
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "Level": 3,
+        "RequiredScore": 5,
+        "Questions": [
+            {
+                "Question": "What type of energy is stored in a stretched rubber band?",
+                "Answers": [
+                    {
+                        "Answer": "Kinetic",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Potential",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Thermal",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Elastic Potential",
+                        "Correct": true
+                    }
+                ]
+            },
+            {
+                "Question": "What is the main gas responsible for the greenhouse effect?",
+                "Answers": [
+                    {
+                        "Answer": "Oxygen",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Nitrogen",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Carbon Dioxide",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "Hydrogen",
+                        "Correct": false
+                    }
+                ]
+            },
+            {
+                "Question": "What is the speed of light in vacuum?",
+                "Answers": [
+                    {
+                        "Answer": "150,000 km/s",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "200,000 km/s",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "300,000 km/s",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "400,000 km/s",
+                        "Correct": false
+                    }
+                ]
+            },
+            {
+                "Question": "Which subatomic particle has a negative charge?",
+                "Answers": [
+                    {
+                        "Answer": "Proton",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Neutron",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Electron",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "Positron",
+                        "Correct": false
+                    }
+                ]
+            },
+            {
+                "Question": "What do we call an animal that eats both plants and animals?",
+                "Answers": [
+                    {
+                        "Answer": "Herbivore",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Carnivore",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "Omnivore",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "Insectivore",
+                        "Correct": false
+                    }
+                ]
+            }
+        ]
+    }
+]

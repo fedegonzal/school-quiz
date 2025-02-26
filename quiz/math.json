@@ -1,0 +1,100 @@
+[
+    {
+        "Level": "Newbie",
+        "RequiredScore": 2,
+        "Randomize": true,
+        "Questions": [
+            {
+                "Question": "What is 2 + 2?",
+                "Answers": [
+                    {
+                        "Answer": "4",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "3",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "5",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "6",
+                        "Correct": false
+                    }
+                ]
+            },
+            {
+                "Question": "What is 3 + 3?",
+                "Answers": [
+                    {
+                        "Answer": "6",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "5",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "4",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "7",
+                        "Correct": false
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "Level": "Intermediate",
+        "RequiredScore": 2,
+        "Randomize": true,
+        "Questions": [
+            {
+                "Question": "What is 4 + 4?",
+                "Answers": [
+                    {
+                        "Answer": "8",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "7",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "6",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "9",
+                        "Correct": false
+                    }
+                ]
+            },
+            {
+                "Question": "What is 5 + 5?",
+                "Answers": [
+                    {
+                        "Answer": "10",
+                        "Correct": true
+                    },
+                    {
+                        "Answer": "9",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "8",
+                        "Correct": false
+                    },
+                    {
+                        "Answer": "11",
+                        "Correct": false
+                    }
+                ]
+            }
+        ]
+    }
+]
